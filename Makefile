@@ -1,4 +1,4 @@
-.PHONY: help dev test install clean format lint
+.PHONY: help dev dev-backend test install clean format lint docker-up docker-down docker-build docker-logs
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -8,7 +8,10 @@ install:  ## Install dependencies
 	pip install -r backend/requirements.txt
 	pip install -e .[dev]
 
-dev:  ## Start development server
+dev:  ## Start development server (backend + frontend concurrently)
+	cd frontend && npm run dev:concurrent
+
+dev-backend:  ## Start backend development server only
 	cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 test:  ## Run tests
@@ -37,4 +40,21 @@ clean:  ## Clean up generated files
 build:  ## Build the project
 	python -m build
 
-check: format lint test  ## Run all checks (format, lint, test) 
+check: format lint test  ## Run all checks (format, lint, test)
+
+# Docker commands
+docker-build:  ## Build Docker images
+	docker-compose build
+
+docker-up:  ## Start Docker services
+	docker-compose up -d
+
+docker-down:  ## Stop Docker services
+	docker-compose down
+
+docker-logs:  ## View Docker service logs
+	docker-compose logs -f
+
+docker-clean:  ## Clean Docker containers and images
+	docker-compose down --rmi all
+	docker system prune -f 

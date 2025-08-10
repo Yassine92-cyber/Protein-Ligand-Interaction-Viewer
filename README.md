@@ -16,6 +16,18 @@ A FastAPI-based web service for analyzing protein-ligand interactions using RDKi
 
 - Python 3.8 or higher
 - pip package manager
+- Node.js 16 or higher
+- npm package manager
+
+### Option 1: Local Development (Recommended for Windows)
+
+This option runs the application directly on your system without Docker.
+
+### Option 2: Docker Deployment
+
+If you prefer to use Docker containers, you'll need:
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- At least 4GB RAM available
 
 ### Setup
 
@@ -24,6 +36,29 @@ A FastAPI-based web service for analyzing protein-ligand interactions using RDKi
    git clone https://github.com/Yassine92-cyber/Protein-Ligand-Interaction-Viewer.git
    cd Protein-Ligand-Interaction-Viewer
    ```
+
+#### For Local Development (Windows)
+
+2. **Install Python dependencies**:
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   cd ..
+   ```
+
+3. **Install frontend dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+4. **Test your setup**:
+   ```powershell
+   .\test-local.ps1
+   ```
+
+#### For Docker Deployment
 
 2. **Install dependencies**:
    ```bash
@@ -36,21 +71,136 @@ A FastAPI-based web service for analyzing protein-ligand interactions using RDKi
    pip install -e .[dev]
    ```
 
+3. **Install frontend dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+4. **Configure environment**:
+   ```bash
+   # Copy the example environment file
+   cp frontend/env.example frontend/.env.local
+   
+   # Edit .env.local if you need to change the API URL
+   ```
+
+## 📁 Sample Data
+
+The application includes sample data to get you started:
+
+- **Sample Protein-Ligand Complex**: Use the "Load Sample Data" button in the interface
+- **Public PDB Structures**: Try these well-known protein-ligand complexes:
+  - **1A4W**: HIV-1 protease with inhibitor (small, well-studied)
+  - **3PTB**: Trypsin with benzamidine (classic serine protease)
+  - **1HCL**: Human carbonic anhydrase with inhibitor
+  - **2PTC**: Trypsin with pancreatic trypsin inhibitor
+  - **1TIM**: Triosephosphate isomerase (enzyme without ligand)
+
+To use public PDBs:
+1. Download PDB files from [RCSB PDB](https://www.rcsb.org/)
+2. Upload the PDB file in the interface
+3. For ligands, you can extract them from the PDB or find matching SDF files
+
 ## Usage
 
-### Starting the Development Server
+### Docker Deployment
 
 ```bash
+# Start all services
+docker-compose up --build
+
+# Access the application
+# Frontend: http://localhost
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
+
+### Local Development (No Docker Required)
+
+#### Quick Start (Windows)
+
+```powershell
+# Test your setup first
+.\test-local.ps1
+
+# Start the application
+.\start-local.ps1
+```
+
+#### Manual Setup
+
+1. **Install Python dependencies:**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   cd ..
+   ```
+
+2. **Install Node.js dependencies:**
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+3. **Start the backend server:**
+   ```bash
+   cd backend
+   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+4. **Start the frontend server (in a new terminal):**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+#### Using Make (if available)
+
+```bash
+# Start both backend and frontend concurrently
 make dev
+
+# Or start services separately
+make dev-backend    # Backend only
+cd frontend && npm run dev  # Frontend only
 ```
 
-Or manually:
+The API will be available at `http://localhost:8000` and the frontend at `http://localhost:5173`
+
+## 🚀 GitHub Deployment
+
+### Frontend (GitHub Pages)
+The frontend automatically deploys to GitHub Pages on every push to the `main` branch.
+
+### Backend Deployment
+Use the deployment scripts to deploy the backend to various platforms:
+
+**Windows:**
+```batch
+.\deploy-backend.bat
+```
+
+**Linux/Mac:**
 ```bash
-cd backend
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+./deploy-backend.sh
 ```
 
-The API will be available at `http://localhost:8000`
+**Supported Platforms:**
+- Heroku
+- Railway
+- Vercel
+- Render
+- Docker
+
+### GitHub Actions
+The project includes automated CI/CD pipelines:
+- **CI Pipeline**: Tests backend and frontend on multiple platforms
+- **Deploy Pipeline**: Automatically deploys frontend to GitHub Pages
+- **Docker Testing**: Builds and tests Docker containers
+
+For detailed GitHub setup instructions, see [GITHUB_SETUP.md](GITHUB_SETUP.md).
 
 ### API Endpoints
 
